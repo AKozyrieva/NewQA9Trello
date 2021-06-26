@@ -1,0 +1,77 @@
+package com.company.test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class CurrentBoardTests extends TestBase {
+    @BeforeMethod
+    public void initTests() throws InterruptedException {
+        driver.findElement(By.xpath("//a[contains(text(),'Войти')]")).click();
+        Thread.sleep(1000);
+
+        WebElement userField = driver.findElement(By.cssSelector("#user"));
+        editField(userField, "a.kurkova59@icloud.com");
+        Thread.sleep(1000);
+
+        WebElement loginField = driver.findElement(By.cssSelector("#login"));
+        loginField.click();
+        Thread.sleep(3000);
+
+        WebElement password = driver.findElement(By.cssSelector("input[name='password']"));
+        editField(password, "naskacrazy1993");
+        Thread.sleep(3000);
+
+        WebElement loginInField = driver.findElement(By.id("login-submit"));
+        loginInField.click();
+        Thread.sleep(15000);
+
+
+        this.driver.findElement(By.xpath("//a[@data-test-id = 'home-team-boards-tab']")).click();
+        Thread.sleep(3000L);
+        this.driver.findElement(By.xpath("//a[@class = 'board-tile'][.//div[@title='QA Haifa9']]")).click();
+        Thread.sleep(3000L);
+
+
+    }
+
+    @Test
+    public void newListCreatingTest() throws InterruptedException {
+
+        WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
+        createList.click();
+        Thread.sleep(1000);
+
+        WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
+        editField(listTitle, "New");
+        Thread.sleep(3000);
+
+        WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
+        saveNewList.click();
+        Thread.sleep(2000L);
+
+    }
+    @Test
+    public void addNewCardTest() throws InterruptedException {
+        // press 'Add a card' ('Add another card')
+        WebElement addCardButton = driver.findElement(By.cssSelector(".card-composer-container"));
+        addCardButton.click();
+        //fill in card title
+        WebElement cardTitleField = driver.findElement(By.cssSelector(".js-card-title"));
+        editField(cardTitleField, "card title");
+        Thread.sleep(1000);
+        driver.findElement(By.cssSelector(".js-add-card")).click();
+        Thread.sleep(3000);
+        driver.findElement(By.cssSelector(".js-cancel")).click();
+        Thread.sleep(3000);
+
+    }
+
+    private void editField(WebElement field, String value) {
+        field.click();
+        field.sendKeys(value);
+    }
+}
