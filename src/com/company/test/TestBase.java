@@ -6,6 +6,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public class TestBase {
+    public static String PASSWORD = "nastya28a";
+    public static String LOGIN = "a.kurkova59@icloud.com";
 
     WebDriver driver;
 

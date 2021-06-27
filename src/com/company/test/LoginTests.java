@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 public class LoginTests extends TestBase {
 
 
+
     @Test
     public void positiveLogin() throws InterruptedException {
         driver.findElement(By.xpath("//a[contains(text(),'Войти')]")).click();

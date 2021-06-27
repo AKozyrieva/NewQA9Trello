@@ -16,7 +16,7 @@ public class CurrentBoardTests extends TestBase {
         Thread.sleep(1000);
 
         WebElement userField = driver.findElement(By.cssSelector("#user"));
-        editField(userField, "a.kurkova59@icloud.com");
+        editField(userField, LOGIN);
         Thread.sleep(1000);
 
         WebElement loginField = driver.findElement(By.cssSelector("#login"));
@@ -24,7 +24,7 @@ public class CurrentBoardTests extends TestBase {
         Thread.sleep(3000);
 
         WebElement password = driver.findElement(By.cssSelector("input[name='password']"));
-        editField(password, "naskacrazy1993");
+        editField(password, PASSWORD);
         Thread.sleep(3000);
 
         WebElement loginInField = driver.findElement(By.id("login-submit"));
