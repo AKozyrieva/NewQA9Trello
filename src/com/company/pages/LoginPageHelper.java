@@ -53,7 +53,7 @@ public class LoginPageHelper extends PageBase {
         driver.findElement(By.id("login")).click();    }
 
     public void pressLoginAsAttlButton() {
-        waitUntilElementIsClickable(By.xpath("//input[@value = 'Войти с помощью Atlassian']"), 7);
+        waitUntilElementIsClickable(By.xpath("//input[@value = 'Войти с помощью Atlassian']"),5);
         WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Войти с помощью Atlassian']"));
         loginAsAttl.click();    }
 

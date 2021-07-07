@@ -21,19 +21,18 @@ public class CurrentBoardTests extends TestBase {
 
         WebElement userField = driver.findElement(By.cssSelector("#user"));
         editField(userField, LOGIN);
-        waitUntilElementIsClickable(By.xpath("//input[@value = 'Log in with Atlassian']"),7);
-        WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Log in with Atlassian']"));
+        waitUntilElementIsClickable(By.xpath("//input[@value = 'Войти с помощью Atlassian']"),5);
+        WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Войти с помощью Atlassian']"));
+
+        // press 'Log in with Atlassian' button
         loginAsAttl.click();
-        waitUntilElementIsClickable(By.id("password"), 5);
+        waitUntilElementIsClickable(By.id("password"),5);
 
         WebElement password = driver.findElement(By.cssSelector("input[name='password']"));
-        // password.click();
-        //password.sendKeys("nastya28a");
         editField(password, PASSWORD);
         waitUntilElementIsClickable(By.id("login-submit"), 5);
 
         driver.findElement(By.id("login-submit")).click();
-        //Thread.sleep(5000);
         waitUntilElementIsClickable(By.xpath("(//button]@data-test-id='header-boards-menu-button']/span[2]"), 25);
 
 
@@ -166,6 +165,9 @@ public class CurrentBoardTests extends TestBase {
             saveNewList.click();
 
             waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
+            waitUntilElementIsClickable(By.cssSelector(".js-cancel-edit"),10);
+            WebElement cancelListCreatingButton = driver.findElement(By.cssSelector(".js-cancel-edit"));
+            cancelListCreatingButton.click();
             beginList++;
         }
             waitUntilElementIsClickable(By.cssSelector(".list-header-extras-menu"),5);
