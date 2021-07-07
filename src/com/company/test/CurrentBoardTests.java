@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.Clock;
 import java.util.List;
 
 public class CurrentBoardTests extends TestBase {
@@ -15,13 +16,13 @@ public class CurrentBoardTests extends TestBase {
 
     @BeforeMethod
     public void initTests() throws InterruptedException {
-        WebElement button = driver.findElement(By.xpath("//a[contains(text(),'Войти')]"));
-        button.click();
+        WebElement button = driver.findElement(By.cssSelector(".text-primary"));
+                button.click();
 
         WebElement userField = driver.findElement(By.cssSelector("#user"));
         editField(userField, LOGIN);
-        waitUntilElementIsClickable(By.xpath("//input[@value = 'Войти с помощью Atlassian']"), 7);
-        WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Войти с помощью Atlassian']"));
+        waitUntilElementIsClickable(By.xpath("//input[@value = 'Log in with Atlassian']"),7);
+        WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Log in with Atlassian']"));
         loginAsAttl.click();
         waitUntilElementIsClickable(By.id("password"), 5);
 
@@ -49,7 +50,9 @@ public class CurrentBoardTests extends TestBase {
 
     @Test
     public void newListCreatingTest() throws InterruptedException {
-
+        List<WebElement> listQuantity = driver.findElements(By.cssSelector(".js-editing-target"));
+        listQuantity.toString();
+        System.out.println("Quantity of the list at the beginning: " + listQuantity.size());
         WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
         createList.click();
         //Thread.sleep(1000);
@@ -60,107 +63,130 @@ public class CurrentBoardTests extends TestBase {
 
         WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
         saveNewList.click();
-        //Thread.sleep(2000L);
+        waitUntilElementIsVisible(By.cssSelector(".js-save-edit"),10);
+
         waitUntilElementIsClickable(By.cssSelector(".js-cancel-edit"), 5);
         WebElement cancelListCreating = driver.findElement(By.cssSelector(".js-cancel-edit"));
         cancelListCreating.click();
 
-        waitUntilElementIsInvisible(By.cssSelector(".js-cancel-edit"), 5);
-
+        waitUntilElementIsClickable(By.cssSelector(".placeholder"), 5);
+        List<WebElement> listQuantity2 = driver.findElements(By.cssSelector(".js-editing-target"));
+        listQuantity2.toString();
+        Assert.assertNotEquals(listQuantity,listQuantity2);
     }
+
 
 
     @Test
     public void addNewCardTest() throws InterruptedException {
-        // press 'Add a card' ('Add another card')
-        WebElement addCardButton = driver.findElement(By.cssSelector(".card-composer-container"));
-        addCardButton.click();
-        //fill in card title
-        WebElement cardTitleField = driver.findElement(By.cssSelector(".js-card-title"));
-        editField(cardTitleField, "card title");
-        waitUntilElementIsVisible(By.cssSelector(".js-card-title"), 5);
-        driver.findElement(By.cssSelector(".js-add-card")).click();
-        driver.findElement(By.cssSelector(".js-cancel")).click();
-        waitUntilElementIsInvisible(By.cssSelector(".js-cancel"), 5);
 
-    }
-
-
-    @Test
-    public void archiveList() throws InterruptedException {
-        List<WebElement> existList = driver.findElements(By.cssSelector(".js-editing-target"));
-        if (existList.size() > 0) {
-            System.out.println("Before the archive, the number of list " + existList.size());
-            WebElement buttonAction = driver.findElement(By.cssSelector(".list-header-extras"));
-            buttonAction.click();
-            WebElement archiveList = driver.findElement(By.cssSelector(".js-close-list"));
-            archiveList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-close-list"), 5);
-        } else {
+        int beginList = getListsQuantity();
+        if(beginList==0) {
             WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
             createList.click();
 
             WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
             editField(listTitle, "New");
-            waitUntilElementIsVisible(By.cssSelector("input[name='name']"), 3);
 
             WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
             saveNewList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-save-edit"), 2);
+            //Thread.sleep(2000L);
+            waitUntilElementBecome(By.cssSelector(".js-list-content"), beginList + 1, 10);
+        }
+        int beginCard = getCardQuantity();
+            //fill in card title
+            WebElement addCardButton = driver.findElement(By.cssSelector(".card-composer-container"));
+            addCardButton.click();
 
-            WebElement buttonAction = driver.findElement(By.cssSelector(".list-header-extras"));
-            buttonAction.click();
-            WebElement archiveList = driver.findElement(By.cssSelector(".js-close-list"));
-            archiveList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-close-list"), 5);
+            WebElement cardTitleField = driver.findElement(By.cssSelector(".js-card-title"));
+            editField(cardTitleField, "card title");
+
+            driver.findElement(By.cssSelector(".js-add-card")).click();
+            waitUntilElementBecome(By.cssSelector(".list-card-title"),beginCard+1, 10);
+            waitUntilElementIsClickable(By.cssSelector(".js-cancel"),5);
+            driver.findElement(By.cssSelector(".js-cancel")).click();
+            int endCardQuantity = getCardQuantity();
+            Assert.assertEquals(endCardQuantity,beginCard+1,"endCardQuantity is not beginCard+1");
 
 
         }
 
+    private int getListsQuantity() {
+        List<WebElement> collumnsList = driver.findElements(By.cssSelector(".js-list-content"));
+        return collumnsList.size();
+    }
 
-        List<WebElement> existList2 = driver.findElements(By.cssSelector(".js-editing-target"));
-        System.out.println("Before the archive, the number of list " + existList2.size());
-        Assert.assertEquals(existList.size(), existList2.size());
+    private int getCardQuantity() {
+        List<WebElement> collumnList = driver.findElements(By.cssSelector(".list-card-title"));
+        return collumnList.size();
+    }
+
+
+    @Test
+    public void archiveList() throws InterruptedException {
+        int beginList = getListsQuantity();
+        if(beginList==0) {
+            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
+            createList.click();
+
+            WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
+            editField(listTitle, "New");
+
+            WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
+            saveNewList.click();
+
+            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
+            beginList++;
+        }
+           waitUntilElementIsClickable(By.cssSelector(".list-header-extras"),7);
+           driver.findElement(By.cssSelector(".list-header-extras")).click();
+
+            waitUntilElementIsClickable(By.cssSelector(".js-close-list"),5);
+            driver.findElement(By.cssSelector(".js-close-list")).click();
+            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
+
+            int endList = getListsQuantity();
+            Assert.assertEquals(beginList-1,endList, "beginList-1 is not endList");
 
     }
 
 
     @Test
     public void copyList() throws InterruptedException {
-        List<WebElement> existList = driver.findElements(By.cssSelector(".js-editing-target"));
-        if (existList.size() > 0) {
-            System.out.println("Before the copy, the number of list " + existList.size());
-            WebElement buttonAction = driver.findElement(By.cssSelector(".list-header-extras"));
-            buttonAction.click();
-            WebElement copyList = driver.findElement(By.cssSelector(".js-copy-list"));
-            copyList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-copy-list"), 5);
-        } else {
+
+        int beginList = getListsQuantity();
+        if(beginList==0) {
             WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
             createList.click();
 
             WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
             editField(listTitle, "New");
-            waitUntilElementIsVisible(By.cssSelector("input[name='name']"), 3);
 
             WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
             saveNewList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-save-edit"), 2);
 
-            System.out.println("Before the copy, the number of list " + existList.size());
-            WebElement buttonAction = driver.findElement(By.cssSelector(".list-header-extras"));
-            buttonAction.click();
-            WebElement copyList = driver.findElement(By.cssSelector(".js-copy-list"));
-            copyList.click();
-            waitUntilElementIsClickable(By.cssSelector(".js-copy-list"), 5);
-
-
+            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
+            beginList++;
         }
+            waitUntilElementIsClickable(By.cssSelector(".list-header-extras-menu"),5);
+            driver.findElement(By.cssSelector(".list-header-extras")).click();
+            waitUntilElementIsClickable(By.cssSelector(".js-copy-list"),10);
+
+            driver.findElement(By.cssSelector(".js-copy-list")).click();
 
 
-        List<WebElement> existList2 = driver.findElements(By.cssSelector(".js-editing-target"));
-        System.out.println("Before the copy, the number of list " + existList2.size());
-        Assert.assertEquals(existList.size(), existList2.size());
+            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
+            waitUntilElementIsClickable(By.cssSelector(".js-submit"),10);
+            driver.findElement(By.cssSelector(".js-submit")).click();
+            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,5);
+
+            int endLists = getListsQuantity();
+            Assert.assertEquals(endLists,beginList+1, "endList is not beginList+1");
+
+
+
+
+
 
     }
 }

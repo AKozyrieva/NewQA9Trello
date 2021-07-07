@@ -1,36 +1,13 @@
-package com.company.test;
+package com.company.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 
-public class TestBase {
-    public static String PASSWORD = "nastya28a";
-    public static String LOGIN = "a.kurkova59@icloud.com";
-
+public class PageBase {
     WebDriver driver;
-
-    @BeforeMethod
-    public void startUp() throws InterruptedException {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("lang=" + "en");
-        driver = new ChromeDriver(options);
-
-        driver = new ChromeDriver();
-        driver.get("http://trello.com/");
-
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        driver.quit();
-    }
 
     public void editField(WebElement field, String value) {
         field.click();
@@ -68,7 +45,6 @@ public class TestBase {
             e.printStackTrace();
         }
     }
-
     public void waitUntilElementBecome(By locator, int quantity, int time) {
         try {
             new WebDriverWait(driver, time).until(ExpectedConditions.numberOfElementsToBe(locator,quantity));
@@ -76,7 +52,5 @@ public class TestBase {
             e.printStackTrace();
         }
     }
+
 }
-
-
-
