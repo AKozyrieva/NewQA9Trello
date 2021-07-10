@@ -1,5 +1,9 @@
 package com.company.test;
 
+import com.company.pages.BoardsPageHelper;
+import com.company.pages.CurrentBoardPageHelper;
+import com.company.pages.HomePageHelper;
+import com.company.pages.LoginPageHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,186 +16,87 @@ import java.time.Clock;
 import java.util.List;
 
 public class CurrentBoardTests extends TestBase {
+    HomePageHelper homePage;
+    LoginPageHelper loginPage;
+    BoardsPageHelper boardsPage;
+    CurrentBoardPageHelper boardQa9Haifa;
 
 
     @BeforeMethod
-    public void initTests() throws InterruptedException {
-        WebElement button = driver.findElement(By.cssSelector(".text-primary"));
-                button.click();
+    public void initTests() {
+        homePage = new HomePageHelper(driver);
+        loginPage = new LoginPageHelper(driver);
+        boardsPage = new BoardsPageHelper(driver);
+        boardQa9Haifa = new CurrentBoardPageHelper(driver, "QA Haifa 9");
 
-        WebElement userField = driver.findElement(By.cssSelector("#user"));
-        editField(userField, LOGIN);
-        waitUntilElementIsClickable(By.xpath("//input[@value = 'Войти с помощью Atlassian']"),5);
-        WebElement loginAsAttl = driver.findElement(By.xpath("//input[@value = 'Войти с помощью Atlassian']"));
+        homePage.waitUntilPageIsLoaded();
+        loginPage.openPage();
+        loginPage.waitUntilPageIsLoaded();
+        loginPage.loginAsAttl(LOGIN, PASSWORD);
+        boardsPage.waitUntilPageIsLoaded();
+        boardsPage.openBoardsMenu();
+        boardQa9Haifa.openPage();
+        boardQa9Haifa.waitUntilPageIsLoaded();
 
-        // press 'Log in with Atlassian' button
-        loginAsAttl.click();
-        waitUntilElementIsClickable(By.id("password"),5);
-
-        WebElement password = driver.findElement(By.cssSelector("input[name='password']"));
-        editField(password, PASSWORD);
-        waitUntilElementIsClickable(By.id("login-submit"), 5);
-
-        driver.findElement(By.id("login-submit")).click();
-        waitUntilElementIsClickable(By.xpath("(//button]@data-test-id='header-boards-menu-button']/span[2]"), 25);
-
-
-        //click on specific board
-        WebElement board = driver.findElement((By.cssSelector("div[title='QA Haifa9']")));
-        board.click();
-        //wait while "Add another button" is uploading
-        waitUntilElementIsClickable(By.cssSelector(".placeholder"), 10);
-        //wait while all lists are uploading
-        waitUntilAllElementsArePresent(By.cssSelector(".list js-list-content"), 10);
 
     }
 
 
     @Test
     public void newListCreatingTest() throws InterruptedException {
-        List<WebElement> listQuantity = driver.findElements(By.cssSelector(".js-editing-target"));
-        listQuantity.toString();
-        System.out.println("Quantity of the list at the beginning: " + listQuantity.size());
-        WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
-        createList.click();
-        //Thread.sleep(1000);
-
-        WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
-        editField(listTitle, "New");
-        //Thread.sleep(3000);
-
-        WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
-        saveNewList.click();
-        waitUntilElementIsVisible(By.cssSelector(".js-save-edit"),10);
-
-        waitUntilElementIsClickable(By.cssSelector(".js-cancel-edit"), 5);
-        WebElement cancelListCreating = driver.findElement(By.cssSelector(".js-cancel-edit"));
-        cancelListCreating.click();
-
-        waitUntilElementIsClickable(By.cssSelector(".placeholder"), 5);
-        List<WebElement> listQuantity2 = driver.findElements(By.cssSelector(".js-editing-target"));
-        listQuantity2.toString();
-        Assert.assertNotEquals(listQuantity,listQuantity2);
+        int beginListsQuantity = boardQa9Haifa.getListsQuantity();
+        boardQa9Haifa.addNewList("New List");
+        int endListsQuantity = boardQa9Haifa.getListsQuantity();
+        Assert.assertEquals(endListsQuantity,beginListsQuantity+1,
+                "endListsQuantity is not beginListsQuantity+1");
     }
-
-
 
     @Test
     public void addNewCardTest() throws InterruptedException {
 
-        int beginList = getListsQuantity();
+        int beginList = boardQa9Haifa.getListsQuantity();
         if(beginList==0) {
-            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
-            createList.click();
-
-            WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
-            editField(listTitle, "New");
-
-            WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
-            saveNewList.click();
-            //Thread.sleep(2000L);
-            waitUntilElementBecome(By.cssSelector(".js-list-content"), beginList + 1, 10);
+            boardQa9Haifa.addNewList("New List1");
         }
-        int beginCard = getCardQuantity();
-            //fill in card title
-            WebElement addCardButton = driver.findElement(By.cssSelector(".card-composer-container"));
-            addCardButton.click();
-
-            WebElement cardTitleField = driver.findElement(By.cssSelector(".js-card-title"));
-            editField(cardTitleField, "card title");
-
-            driver.findElement(By.cssSelector(".js-add-card")).click();
-            waitUntilElementBecome(By.cssSelector(".list-card-title"),beginCard+1, 10);
-            waitUntilElementIsClickable(By.cssSelector(".js-cancel"),5);
-            driver.findElement(By.cssSelector(".js-cancel")).click();
-            int endCardQuantity = getCardQuantity();
-            Assert.assertEquals(endCardQuantity,beginCard+1,"endCardQuantity is not beginCard+1");
-
-
+        int beginCards = boardQa9Haifa.getCardQuantity();
+        boardQa9Haifa.addCardToTheList("Card name");
+        int endCardsQuantity = boardQa9Haifa.getCardQuantity();
+        Assert.assertEquals(endCardsQuantity,beginCards+1,
+                "endCardsQuantity is not beginCards+1");
         }
-
-    private int getListsQuantity() {
-        List<WebElement> collumnsList = driver.findElements(By.cssSelector(".js-list-content"));
-        return collumnsList.size();
-    }
-
-    private int getCardQuantity() {
-        List<WebElement> collumnList = driver.findElements(By.cssSelector(".list-card-title"));
-        return collumnList.size();
-    }
 
 
     @Test
-    public void archiveList() throws InterruptedException {
-        int beginList = getListsQuantity();
+    public void archiveList(){
+        int beginList = boardQa9Haifa.getListsQuantity();
         if(beginList==0) {
-            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
-            createList.click();
-
-            WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
-            editField(listTitle, "New");
-
-            WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
-            saveNewList.click();
-
-            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
+            boardQa9Haifa.addNewList("New List1");
             beginList++;
         }
-           waitUntilElementIsClickable(By.cssSelector(".list-header-extras"),7);
-           driver.findElement(By.cssSelector(".list-header-extras")).click();
-
-            waitUntilElementIsClickable(By.cssSelector(".js-close-list"),5);
-            driver.findElement(By.cssSelector(".js-close-list")).click();
-            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
-
-            int endList = getListsQuantity();
-            Assert.assertEquals(beginList-1,endList, "beginList-1 is not endList");
+        boardQa9Haifa.archiveList();
+        int endList = boardQa9Haifa.getListsQuantity();
+        Assert.assertEquals(beginList-1,endList,
+                "beginLists-1 is not endLists");
 
     }
 
-
     @Test
-    public void copyList() throws InterruptedException {
+    public void copyList(){
 
-        int beginList = getListsQuantity();
+        int beginList = boardQa9Haifa.getListsQuantity();
         if(beginList==0) {
-            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
-            createList.click();
 
-            WebElement listTitle = driver.findElement(By.cssSelector("input[name='name']"));
-            editField(listTitle, "New");
-
-            WebElement saveNewList = driver.findElement(By.cssSelector(".js-save-edit"));
-            saveNewList.click();
-
-            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,10);
-            waitUntilElementIsClickable(By.cssSelector(".js-cancel-edit"),10);
-            WebElement cancelListCreatingButton = driver.findElement(By.cssSelector(".js-cancel-edit"));
-            cancelListCreatingButton.click();
+            boardQa9Haifa.addNewList("New List2");
             beginList++;
         }
-            waitUntilElementIsClickable(By.cssSelector(".list-header-extras-menu"),5);
-            driver.findElement(By.cssSelector(".list-header-extras")).click();
-            waitUntilElementIsClickable(By.cssSelector(".js-copy-list"),10);
 
-            driver.findElement(By.cssSelector(".js-copy-list")).click();
-
-
-            WebElement createList = driver.findElement(By.cssSelector(".placeholder"));
-            waitUntilElementIsClickable(By.cssSelector(".js-submit"),10);
-            driver.findElement(By.cssSelector(".js-submit")).click();
-            waitUntilElementBecome(By.cssSelector(".js-list-content"),beginList+1,5);
-
-            int endLists = getListsQuantity();
-            Assert.assertEquals(endLists,beginList+1, "endList is not beginList+1");
-
-
-
-
-
+        boardQa9Haifa.copyList("Copy List");
+        int endLists = boardQa9Haifa.getListsQuantity();
+        Assert.assertEquals(endLists,beginList+1, "endLists is not beginLists+1");
 
     }
 }
+
 
 
 
