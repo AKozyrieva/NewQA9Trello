@@ -19,8 +19,9 @@ public class BoardsPageHelper extends PageBase {
         this.driver = driver;
     }
 
-    public void waitUntilPageIsLoaded(){
+    public BoardsPageHelper waitUntilPageIsLoaded(){
         waitUntilElementIsClickable(boardsIcon,30);
+        return this;
     }
 
     public String getBoardsButtonName() {

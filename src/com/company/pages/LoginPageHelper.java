@@ -25,13 +25,16 @@ public class LoginPageHelper extends PageBase {
         this.driver = driver;
     }
 
-    public void openPage() {
+    public LoginPageHelper openPage() {
         waitUntilElementIsClickable(logInIcon, 15);
         logInIcon.click();
+        return this;
     }
 
-    public void waitUntilPageIsLoaded() {
+    public LoginPageHelper waitUntilPageIsLoaded() {
+
         waitUntilElementIsClickable(loginButton, 10);
+        return this;
     }
 
     public void loginNotAttl(String login, String password) {

@@ -31,11 +31,13 @@ public class CurrentBoardTests extends TestBase {
         boardQa9Haifa = new CurrentBoardPageHelper(driver, "QA Haifa9");
 
         homePage.waitUntilPageIsLoaded();
-        loginPage.openPage();
-        loginPage.waitUntilPageIsLoaded();
-        loginPage.loginAsAttl(LOGIN, PASSWORD);
-        boardsPage.waitUntilPageIsLoaded();
-        boardsPage.openBoardsMenu();
+        loginPage
+                .openPage()
+                .waitUntilPageIsLoaded()
+                .loginAsAttl(LOGIN, PASSWORD);
+        boardsPage
+                .waitUntilPageIsLoaded()
+                .openBoardsMenu();
         boardQa9Haifa.openPage();
         boardQa9Haifa.waitUntilPageIsLoaded();
 
