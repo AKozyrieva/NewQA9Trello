@@ -8,7 +8,7 @@ public class MenuPageTests extends TestBase{
     HomePageHelper homePage;
     LoginPageHelper loginPage;
     BoardsPageHelper boardsPage;
-    CurrentBoardPageHelper qa9HaifaBoard;
+    CurrentBoardPageHelper boardQa9Haifa;
     MenuPageHelper menuPage;
 
     @BeforeMethod
@@ -17,7 +17,7 @@ public class MenuPageTests extends TestBase{
         homePage = new HomePageHelper(driver);
         loginPage = new LoginPageHelper(driver);
         boardsPage = new BoardsPageHelper(driver);
-        qa9HaifaBoard = new CurrentBoardPageHelper(driver, "QA Haifa 9");
+        boardQa9Haifa = new CurrentBoardPageHelper(driver, "QA Haifa 9");
         menuPage = new MenuPageHelper(driver);
 
         homePage.waitUntilPageIsLoaded();
@@ -26,8 +26,8 @@ public class MenuPageTests extends TestBase{
         loginPage.loginAsAttl(LOGIN,PASSWORD);
         boardsPage.waitUntilPageIsLoaded();
         boardsPage.openBoardsMenu();
-        qa9HaifaBoard.openPage();
-        qa9HaifaBoard.waitUntilPageIsLoaded();
+        boardQa9Haifa.openPage();
+        boardQa9Haifa.waitUntilPageIsLoaded();
         menuPage.openPage();
         menuPage.waitUntilPageIsLoaded();
 

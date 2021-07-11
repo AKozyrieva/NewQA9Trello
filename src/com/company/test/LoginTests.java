@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,9 +26,9 @@ public class LoginTests extends TestBase {
 
     @BeforeMethod
     public void initTests()  {
-        homePage = new HomePageHelper(driver);
-        loginPage = new LoginPageHelper(driver);
-        boardsPage = new BoardsPageHelper(driver);
+        homePage = PageFactory.initElements(driver, HomePageHelper.class);
+        loginPage = PageFactory.initElements(driver, LoginPageHelper.class);
+        boardsPage = PageFactory.initElements(driver, BoardsPageHelper.class);
 
         homePage.waitUntilPageIsLoaded();
         loginPage.openPage();
@@ -37,7 +38,7 @@ public class LoginTests extends TestBase {
 
 
     @Test
-    public void positiveLogin() throws InterruptedException {
+    public void positiveLogin() {
        loginPage.loginAsAttl(LOGIN, PASSWORD);
        boardsPage.waitUntilPageIsLoaded();
         Assert.assertEquals(boardsPage.getBoardsButtonName(),"Boards",
@@ -45,12 +46,10 @@ public class LoginTests extends TestBase {
     }
 
     @Test
-    public void negativeLogin() throws InterruptedException {
-        loginPage.loginNotAttl("test", "password");
-        Assert.assertEquals(loginPage.getErrorMessage(),
-                "Указан неверный адрес и/или пароль. Нужна помощь?",
-                "Указан неверный адрес и/или пароль. Нужна помощь?");
-
+    public void negativeLogin()  {
+        loginPage.loginNotAttl("aaaaaaaa", "rererere");
+       Assert.assertEquals(loginPage.getErrorMessage(),"There isn't an account for this username",
+               "The error message is not correct");
     }
 }
 

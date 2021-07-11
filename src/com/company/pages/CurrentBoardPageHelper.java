@@ -3,6 +3,8 @@ package com.company.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -10,30 +12,40 @@ import org.testng.Assert;
 import java.util.List;
 
 public class CurrentBoardPageHelper extends PageBase {
+    @FindBy(css = ".placeholder")
+    WebElement addListButton;
+    @FindBy(css = ".js-list-content")
+    List<WebElement> listQuantity;
     String boardName;
 
     public CurrentBoardPageHelper(WebDriver driver, String boardName) {
         this.driver = driver;
         this.boardName = boardName;
+        PageFactory.initElements(driver, this);
     }
 
     public void openPage() {
-        waitUntilElementIsClickable(boardButtonLocatorLoaded(), 10);
-        WebElement BoardQaHaifa9 = driver.findElement(boardButtonLocatorLoaded());
-        BoardQaHaifa9.click();
+        waitUntilElementIsClickable(boardButtonLocatorLoaded(), 25);
+        WebElement boardQaHaifa9 = driver.findElement(boardButtonLocatorLoaded());
+        boardQaHaifa9.click();
     }
 
-    private By boardButtonLocatorLoaded() {
+    public By boardButtonLocatorLoaded() {
         return By.xpath("//a[@class = 'board-tile'][.//div[@title='"+boardName+"']]");
         
     }
 
 
     public void waitUntilPageIsLoaded() {
+        waitUntilElementIsClickable(addListButton,10);
+        if (addListButton.getText().equals("Add another list")){
+            //waitUntilAllElementsArePresent(By.cssSelector(".js-list-content"),5);
+            waitUntilAllElementsAreVisible(listQuantity, 10);
+        }
     }
 
     public int getListsQuantity() {
-        List<WebElement> listQuantity = driver.findElements(By.cssSelector(".js-list-content"));
+        //List<WebElement> listQuantity = driver.findElements(By.cssSelector(".js-list-content"));
         return listQuantity.size();
     }
 
