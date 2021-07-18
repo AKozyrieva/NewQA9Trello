@@ -16,7 +16,6 @@ public class HomePageHelper extends PageBase{
     }
 
     public void waitUntilPageIsLoaded() {
-        //waitUntilElementIsClickable(By.cssSelector(".text-primary"),40);
         waitUntilElementIsClickable(logInIcon,40);
     }
     public boolean isCorrectPage() {

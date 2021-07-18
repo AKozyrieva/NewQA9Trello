@@ -8,16 +8,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class HomePageTest extends TestBase {
-   // HomePageHelper homePage;
-
-    @BeforeMethod
-    public void initTests(){
-        //homePage = new HomePageHelper(driver);
-        //homePage = PageFactory.initElements(driver, HomePageHelper.class);
-        //homePage.waitUntilPageIsLoaded();
-    }
-
-    @Test
+   @Test
     public void verifyApplTest(){
         Assert.assertTrue(homePage.isCorrectPage());
 

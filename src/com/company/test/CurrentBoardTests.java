@@ -38,7 +38,9 @@ public class CurrentBoardTests extends TestBase {
         boardsPage
                 .waitUntilPageIsLoaded()
                 .openBoardsMenu();
-        boardQa9Haifa.openPage();
+        boardQa9Haifa
+                .openPage()
+                .waitUntilPageIsLoaded();
         boardQa9Haifa.waitUntilPageIsLoaded();
 
 
@@ -76,7 +78,7 @@ public class CurrentBoardTests extends TestBase {
             boardQa9Haifa.addNewList("New List1");
             beginList++;
         }
-        boardQa9Haifa.archiveList();
+        boardQa9Haifa.archiveFirstList();
         int endList = boardQa9Haifa.getListsQuantity();
         Assert.assertEquals(beginList-1,endList,
                 "beginLists-1 is not endLists");

@@ -1,11 +1,13 @@
 package com.company.test;
 
 import com.company.pages.*;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class MenuPageTests extends TestBase{
-    HomePageHelper homePage;
+   // HomePageHelper homePage;
     LoginPageHelper loginPage;
     BoardsPageHelper boardsPage;
     CurrentBoardPageHelper boardQa9Haifa;
@@ -14,11 +16,10 @@ public class MenuPageTests extends TestBase{
     @BeforeMethod
     public void initTests(){
 
-        homePage = new HomePageHelper(driver);
-        loginPage = new LoginPageHelper(driver);
-        boardsPage = new BoardsPageHelper(driver);
+        loginPage = PageFactory.initElements(driver,LoginPageHelper.class);
+        boardsPage = PageFactory.initElements(driver,BoardsPageHelper.class);
         boardQa9Haifa = new CurrentBoardPageHelper(driver, "QA Haifa 9");
-        menuPage = new MenuPageHelper(driver);
+        menuPage = PageFactory.initElements(driver, MenuPageHelper.class);
 
         homePage.waitUntilPageIsLoaded();
         loginPage.openPage();
@@ -32,7 +33,7 @@ public class MenuPageTests extends TestBase{
         menuPage.waitUntilPageIsLoaded();
 
     }
-
+    @Test
     public void profileVisibilityMenuExist(){
         Assert.assertEquals(menuPage.getProfileVisibilityMenuName(), "Profile and visibility");
     }
